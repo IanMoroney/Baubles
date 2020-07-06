@@ -11,8 +11,9 @@
 
 package baubles.api.render;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
+import baubles.api.IBauble;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 
@@ -21,8 +22,10 @@ import net.minecraft.util.math.MathHelper;
  * the player while its equipped.
  * This class doesn't extend IBauble to make the API not depend on the Baubles
  * API, but the item in question still needs to implement IBauble.
+ * A Bauble capability object that implements this will be have hooks to render something on
+ * the player while it's equipped.
  */
-public interface IRenderBauble {
+public interface IRenderBauble extends IBauble {
 
 	/**
 	 * Called for the rendering of the bauble on the player. The player instance can be
@@ -30,7 +33,7 @@ public interface IRenderBauble {
 	 * the RenderType passed in. Make sure to check against the type parameter for
 	 * rendering. 
 	 */
-	public void onPlayerBaubleRender(ItemStack stack, EntityPlayer player, RenderType type, float partialTicks);
+	public void onPlayerBaubleRender(PlayerEntity player, RenderType type, float partialTicks);
 
 	/**
 	 * A few helper methods for the render.
@@ -41,7 +44,7 @@ public interface IRenderBauble {
 		 * Rotates the render for a bauble correctly if the player is sneaking.
 		 * Use for renders under {@link RenderType#BODY}.
 		 */
-		public static void rotateIfSneaking(EntityPlayer player) {
+		public static void rotateIfSneaking(PlayerEntity player) {
 			if(player.isSneaking())
 				applySneakingRotation();
 		}
@@ -51,28 +54,28 @@ public interface IRenderBauble {
 		 * Use for renders under {@link RenderType#BODY}.
 		 */
 		public static void applySneakingRotation() {
-			GlStateManager.translate(0F, 0.2F, 0F);
-			GlStateManager.rotate(90F / (float) Math.PI, 1.0F, 0.0F, 0.0F);
+			RenderSystem.translatef(0F, 0.2F, 0F);
+			RenderSystem.rotatef(90F / (float) Math.PI, 1.0F, 0.0F, 0.0F);
 		}
 
 		/**
 		 * Shifts the render for a bauble correctly to the head, including sneaking rotation.
 		 * Use for renders under {@link RenderType#HEAD}.
 		 */
-		public static void translateToHeadLevel(EntityPlayer player) {
-			GlStateManager.translate(0, -player.getDefaultEyeHeight(), 0);
+		public static void translateToHeadLevel(PlayerEntity player) {
+			RenderSystem.translatef(0, -player.getEyeHeight(), 0);
 			if (player.isSneaking())
-				GlStateManager.translate(0.25F * MathHelper.sin(player.rotationPitch * (float) Math.PI / 180), 0.25F * MathHelper.cos(player.rotationPitch * (float) Math.PI / 180), 0F);
+				RenderSystem.translatef(0.25F * MathHelper.sin(player.rotationPitch * (float) Math.PI / 180), 0.25F * MathHelper.cos(player.rotationPitch * (float) Math.PI / 180), 0F);
 		}
 
 		/**
 		 * Shifts the render for a bauble correctly to the face.
-		 * Use for renders under {@link RenderType#HEAD}, and usually after calling {@link Helper#translateToHeadLevel(EntityPlayer)}.
+		 * Use for renders under {@link RenderType#HEAD}, and usually after calling {@link Helper#translateToHeadLevel(PlayerEntity)}.
 		 */
 		public static void translateToFace() {
-			GlStateManager.rotate(90F, 0F, 1F, 0F);
-			GlStateManager.rotate(180F, 1F, 0F, 0F);
-			GlStateManager.translate(0f, -4.35f, -1.27f);
+			RenderSystem.rotatef(90F, 0F, 1F, 0F);
+			RenderSystem.rotatef(180F, 1F, 0F, 0F);
+			RenderSystem.translatef(0f, -4.35f, -1.27f);
 		}
 
 		/**
@@ -80,17 +83,17 @@ public interface IRenderBauble {
 		 * Use for any render.
 		 */
 		public static void defaultTransforms() {
-			GlStateManager.translate(0.0, 3.0, 1.0);
-			GlStateManager.scale(0.55, 0.55, 0.55);
+			RenderSystem.translated(0.0, 3.0, 1.0);
+			RenderSystem.scaled(0.55, 0.55, 0.55);
 		}
 
 		/**
 		 * Shifts the render for a bauble correctly to the chest.
-		 * Use for renders under {@link RenderType#BODY}, and usually after calling {@link Helper#rotateIfSneaking(EntityPlayer)}.
+		 * Use for renders under {@link RenderType#BODY}, and usually after calling {@link Helper#rotateIfSneaking(PlayerEntity)}.
 		 */
 		public static void translateToChest() {
-			GlStateManager.rotate(180F, 1F, 0F, 0F);
-			GlStateManager.translate(0F, -3.2F, -0.85F);
+			RenderSystem.rotatef(180F, 1F, 0F, 0F);
+			RenderSystem.translatef(0F, -3.2F, -0.85F);
 		}
 	}
 

@@ -1,38 +1,36 @@
 package baubles.api.cap;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.LazyOptional;
 
-public class BaublesContainerProvider implements INBTSerializable<NBTTagCompound>, ICapabilityProvider {
+import javax.annotation.Nonnull;
+public class BaublesContainerProvider implements INBTSerializable<CompoundNBT>, ICapabilityProvider {
+	private final BaublesContainer inner;
+	private final LazyOptional<IBaublesItemHandler> opt;
 
-	private final BaublesContainer container;
+	public BaublesContainerProvider(PlayerEntity player) {
+		this.inner = new BaublesContainer(player);
+		this.opt = LazyOptional.of(() -> inner);
+	}
 
-	public BaublesContainerProvider(BaublesContainer container) {
-		this.container = container;
+	@Nonnull
+	@Override
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
+		return BaublesCapabilities.CAPABILITY_BAUBLES.orEmpty(capability, opt);
 	}
 
 	@Override
-	public boolean hasCapability (Capability<?> capability, EnumFacing facing) {
-		return capability == BaublesCapabilities.CAPABILITY_BAUBLES;
+	public CompoundNBT serializeNBT () {
+		return this.inner.serializeNBT();
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getCapability (Capability<T> capability, EnumFacing facing) {
-		if (capability == BaublesCapabilities.CAPABILITY_BAUBLES) return (T) this.container;
-		return null;
-	}
-
-	@Override
-	public NBTTagCompound serializeNBT () {
-		return this.container.serializeNBT();
-	}
-
-	@Override
-	public void deserializeNBT (NBTTagCompound nbt) {
-		this.container.deserializeNBT(nbt);
+	public void deserializeNBT (CompoundNBT nbt) {
+		this.inner.deserializeNBT(nbt);
 	}
 }

@@ -6,8 +6,8 @@ import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
 import baubles.common.Baubles;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumRarity;
@@ -57,7 +57,7 @@ public class ItemRing extends Item implements IBauble
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, EnumHand hand) {
 		if(!world.isRemote) { 
 			IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
 			for(int i = 0; i < baubles.getSlots(); i++) 
@@ -74,7 +74,7 @@ public class ItemRing extends Item implements IBauble
 	}
 
 	@Override
-	public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
+	public void onWornTick(ItemStack itemstack, LivingEntity player) {
 		if (itemstack.getItemDamage()==0 && player.ticksExisted%39==0) {
 			player.addPotionEffect(new PotionEffect(MobEffects.HASTE,40,0,true,true));
 		}
@@ -97,12 +97,12 @@ public class ItemRing extends Item implements IBauble
 	}
 
 	@Override
-	public void onEquipped(ItemStack itemstack, EntityLivingBase player) {
+	public void onEquipped(ItemStack itemstack, LivingEntity player) {
 		player.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 1.9f);
 	}
 
 	@Override
-	public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {
+	public void onUnequipped(ItemStack itemstack, LivingEntity player) {
 		player.playSound(SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, .75F, 2f);
 	}
 }

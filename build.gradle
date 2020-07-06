@@ -1,30 +1,64 @@
 buildscript {
-    repositories {
-        jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-    }
+	repositories {
+		maven { url = "https://files.minecraftforge.net/maven" }
+		jcenter()
+		mavenCentral()
+	}
+	// This is only here while FG is under active development
+	configurations.classpath {
+		resolutionStrategy {
+			cacheDynamicVersionsFor 10, "seconds"
+			cacheChangingModulesFor 0, "seconds"
+		}
+	}
+	dependencies {
+		classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
+	}
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
 
+apply plugin: "net.minecraftforge.gradle"
 
-version = "1.12-1.5.2"
+//adds the build number to the end of the version string if on a build server
+String build_number = System.getenv().BUILD_NUMBER
+if (build_number == null) {
+	build_number = "9999"
+}
+
+String semver = "${version_major}.${version_minor}.${version_patch}"
+version = "${project.mcversion}-${semver}.${build_number}"
+
 group= "com.azanor.baubles"
 archivesBaseName = "Baubles"
 
-srcCompat = JavaVersion.VERSION_1_8
-targetCompat = JavaVersion.VERSION_1_8
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+compileJava {
+	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+sourceSets {
+	main
+}
+
+dependencies {
+	minecraft([
+		group  : "${project.forgegroup}",
+		name   : "forge",
+		version: "${project.mcversion}-${project.forgeversion}"
+	])
+}
 
 minecraft {
-    version = "1.12-14.21.1.2404"
-    runDir = "run"
-    mappings = "snapshot_20170708"
-    makeObfSourceJar = false
+    // version = "${project.mcversion}-${project.forgeversion}"
+    // runDir = "run"
+    mappings channel: "snapshot", version: project.mcp_mappings
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+}
+
+// prevent java 8's strict doclint for javadocs from failing builds
+if (JavaVersion.current().isJava8Compatible()) {
+	tasks.withType(Javadoc) {
+		options.addStringOption('Xdoclint:none', '-quiet')
+	}
 }
 
 processResources
@@ -34,7 +68,7 @@ processResources
         include 'mcmod.info'
                 
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version':"${project.version}", 'mcversion':"${project.mcversion}"
     }
         
     // copy everything else, thats not the mcmod.info

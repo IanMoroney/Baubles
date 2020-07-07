@@ -98,10 +98,10 @@ public class Baubles {
 	private static class DummyStorage<T> implements Capability.IStorage<T> {
 		@Nullable
 		@Override
-		public INBTBase writeNBT(Capability<T> capability, T instance, EnumFacing side) { return null; }
+		public INBT writeNBT(Capability<T> capability, T instance, EnumFacing side) { return null; }
 
 		@Override
-		public void readNBT(Capability<T> capability, T instance, EnumFacing side, INBTBase nbt) { }
+		public void readNBT(Capability<T> capability, T instance, EnumFacing side, INBT nbt) { }
 	}
 
 	private void serverLoad(FMLServerStartingEvent event)

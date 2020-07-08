@@ -141,7 +141,7 @@ public class ContainerPlayerExpanded extends Container {
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
 
-			EquipmentSlotType EquipmentSlotType = EntityLiving.getSlotForItemStack(itemstack);
+			EquipmentSlotType EquipmentSlotType = LivingEntity.getSlotForItemStack(itemstack);
 
 			int slotShift = baubles.getSlots();
 

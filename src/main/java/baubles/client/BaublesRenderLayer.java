@@ -30,7 +30,7 @@ public final class BaublesRenderLayer implements LayerRenderer<PlayerEntity> {
 	@Override
 	public void render(@Nonnull PlayerEntity player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
 		
-		if(!Config.renderBaubles || player.getActivePotionEffect(MobEffects.INVISIBILITY) != null)
+		if(!Config.renderBaubles || player.getActivePotionEffect(Effects.INVISIBILITY) != null)
 			return;
 
 		player.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES).ifPresent(inv -> {

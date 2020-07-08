@@ -1,7 +1,6 @@
 package baubles.api;
 
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
 
 /**
  * 

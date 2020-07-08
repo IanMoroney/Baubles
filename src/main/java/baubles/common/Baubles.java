@@ -73,21 +73,21 @@ public class Baubles {
 		@SubscribeEvent
 		public static void clientSetup(FMLClientSetupEvent evt) {
 			ClientRegistry.registerKeyBinding(KEY_BAUBLES);
-			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.GUIFACTORY, () -> ClientInit::handleGui);
+			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> ClientInit::handleGui);
 		}
 
 		@SubscribeEvent
 		public static void postLoad(FMLLoadCompleteEvent evt) {
 			// FMLClientSetup is too early to do this
-			Map<String, RenderPlayer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
-			RenderPlayer render;
+			Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
+			PlayerRenderer render;
 			render = skinMap.get("default");
 			render.addLayer(new BaublesRenderLayer());
 			render = skinMap.get("slim");
 			render.addLayer(new BaublesRenderLayer());
 		}
 
-		private static GuiScreen handleGui(FMLPlayMessages.OpenContainer msg) {
+		private static Screen handleGui(FMLPlayMessages.OpenContainer msg) {
 			if (BaublesInteractionObject.ID.equals(msg.getId())) {
 				return new GuiPlayerExpanded(Minecraft.getInstance().player);
 			}
@@ -98,10 +98,10 @@ public class Baubles {
 	private static class DummyStorage<T> implements Capability.IStorage<T> {
 		@Nullable
 		@Override
-		public INBT writeNBT(Capability<T> capability, T instance, EnumFacing side) { return null; }
+		public INBT writeNBT(Capability<T> capability, T instance, Direction side) { return null; }
 
 		@Override
-		public void readNBT(Capability<T> capability, T instance, EnumFacing side, INBT nbt) { }
+		public void readNBT(Capability<T> capability, T instance, Direction side, INBT nbt) { }
 	}
 
 	private void serverLoad(FMLServerStartingEvent event)

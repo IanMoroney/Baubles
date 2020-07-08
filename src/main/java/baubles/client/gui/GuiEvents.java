@@ -1,8 +1,12 @@
 package baubles.client.gui;
 
+import baubles.common.Baubles;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

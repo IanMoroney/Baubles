@@ -14,7 +14,6 @@ package baubles.api.render;
 import baubles.api.IBauble;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 
 /**
